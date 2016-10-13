@@ -22,8 +22,8 @@ function write(rows, geometry_type, geometries, callback) {
 
     var TYPE = types.geometries[geometry_type],
         writer = writers[TYPE],
-        parts = writer.parts(geometries, TYPE),
-        shpLength = 100 + (parts - geometries.length) * 4 + writer.shpLength(geometries),
+        parts = writer.parts ? writer.parts(geometries, TYPE) : 0,
+        shpLength = 100 + (TYPE === types.geometries.POLYGON || TYPE === types.geometries.POLYLINE ? (parts - geometries.length) * 4 + writer.shpLength(geometries) : writer.shpLength(geometries)),
         shxLength = 100 + writer.shxLength(geometries),
         shpBuffer = new ArrayBuffer(shpLength),
         shpView = new DataView(shpBuffer),
